@@ -78,7 +78,6 @@ export default class Dashboard extends Component {
   render() {
     return (
       <div className="container">
-        <h1 style={{ marginLeft: "40%", marginTop: 10 }}>Data Product </h1>
         <h1>Features</h1>
         <hr />
         <div className="row">
