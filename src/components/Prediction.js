@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from "axios";
 
 export default class Prediction extends Component {
   constructor(props) {
@@ -20,23 +21,32 @@ export default class Prediction extends Component {
       Region: "",
       TrafficType: "",
       VisitorType: "",
-      Weekend: ""
+      Weekend: "",
+      prediction: "",
+      predicting: false
     };
   }
 
   onChange(e) {
-    this.setState(
-      {
-        [e.target.name]: e.target.value
-      },
-      () => {
-        console.log(this.state);
-      }
-    );
+    this.setState({
+      [e.target.name]: e.target.value
+    });
   }
   submit(e) {
     e.preventDefault();
-    alert("hi");
+    this.setState({ predicting: true });
+    axios({
+      method: "post",
+      url: "http://localhost:5000/predict",
+      data: this.state,
+      config: { headers: { "Content-Type": "application/json" } }
+    }).then(res => {
+      console.log(res.data);
+      this.setState({
+        prediction: res.data,
+        predicting: false
+      });
+    });
   }
   render() {
     return (
@@ -259,9 +269,14 @@ export default class Prediction extends Component {
             className="btn btn-success"
             onClick={this.submit.bind(this)}
           >
-            Predict
+            {this.state.predicting ? "Predicting..." : "Predict"}
           </button>
         </form>
+        {this.state.prediction ? (
+          <div>
+            <h1>Prediction: {this.state.prediction}</h1>
+          </div>
+        ) : null}
       </div>
     );
   }
